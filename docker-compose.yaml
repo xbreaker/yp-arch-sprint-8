@@ -11,6 +11,8 @@ services:
       - ./postgres-keycloak-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+    networks:
+      - keycloak-network
   keycloak:
     image: quay.io/keycloak/keycloak:21.1
     environment:
@@ -29,14 +31,47 @@ services:
       - "8080:8080"
     depends_on:
       - keycloak_db
+    networks:
+      - keycloak-network
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    depends_on:
+      - keycloak
     environment:
-      REACT_APP_API_URL: http://localhost:8000
+      REACT_APP_API_URL: http://localhost:8081
       REACT_APP_KEYCLOAK_URL: http://localhost:8080
       REACT_APP_KEYCLOAK_REALM: reports-realm
       REACT_APP_KEYCLOAK_CLIENT_ID: reports-frontend
+    networks:
+      - keycloak-network
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - keycloak
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      KEYCLOAK_AUTH_SERVER_URL: http://localhost:8080
+      KEYCLOAK_AUTH_SERVER_ABSOLUT_URL: http://keycloak:8080
+      KEYCLOAK_REALM: reports-realm
+      KEYCLOAK_RESOURCE: reports-api
+      KEYCLOAK_CREDENTIALS_SECRET: oNwoLQdvJAvRcL89SydqCWCe5ry1jMgq
+    volumes:
+      - ./api:/app
+      - ~/.m2:/root/.m2
+    command: >
+      sh -c "mvn clean package -DskipTests &&
+      java -jar target/reports-app-*.jar"
+    networks:
+      - keycloak-network
+
+networks:
+  keycloak-network:
+    driver: bridge

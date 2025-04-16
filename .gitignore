@@ -1,2 +1,5 @@
 /postgres-keycloak-data
 2024__yandex-architecture-sso.code-workspace
+/.idea/
+/api/target/
+/api/reports-app.iml
