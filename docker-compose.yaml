@@ -61,7 +61,7 @@ services:
       KEYCLOAK_AUTH_SERVER_URL: http://localhost:8080
       KEYCLOAK_AUTH_SERVER_ABSOLUT_URL: http://keycloak:8080
       KEYCLOAK_REALM: reports-realm
-      KEYCLOAK_RESOURCE: reports-frontend
+      KEYCLOAK_RESOURCE: reports-api
       KEYCLOAK_CREDENTIALS_SECRET: oNwoLQdvJAvRcL89SydqCWCe5ry1jMgq
     volumes:
       - ./api:/app
