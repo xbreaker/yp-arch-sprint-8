@@ -14,3 +14,10 @@
 <ReactKeycloakProvider authClient={keycloak} initOptions={{pkceMethod: 'S256' }}>
 ```
 
+## Задание 2. Создайте бэкенд-часть приложения для API
+
+Бэкенд написан на Java 17, для запуска необходимо использовать
+```bash
+   docker compose up -d --build
+```
+
